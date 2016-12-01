@@ -1,0 +1,171 @@
+{% extends 'pictures/layout.html' %}
+
+{%block content %}
+
+<div class="jumbotron main" style="padding-bottom: 0px; margin-bottom: 0px;">
+    <div class="main text-center">
+        {% load static %}
+        <div class="main-img">
+            <img class="marathon" src="{% static 'pictures/images/half-marathon.jpg' %}">
+        </div>
+    </div>
+</div>
+<div class="jumbotron text-center ltbl" style="margin-top: 0px;">
+    <div class="container">
+        <div class="main-header"><h1>Happy Birthday Mama!</h1></div>
+        <p>Thanks for always being a great Mama. I've enjoyed spending the semester back at home and seeing you more often. I hope you enjoy this website!
+            Continue to take pictures and make great memories.<br>
+            Love, <br>
+            Sruti</p>
+    </div>
+
+</div>
+<div class="jumbotron container categories" style="margin-bottom: 0px;">
+    <div class="input-group">
+        <input class="input-sm" type="text" name="search" id="search" placeholder="Search"><span class="input-group-button"><button type="button" class="btn btn-info btn-sm">Go</button></span>
+    </div>
+    <h3>Top People</h3>
+    <div class="row">
+        {% for item in toppeople %}
+        <div class="col-md-3 container text-center">
+            <div class="square ltbl" style="height: 200px;">
+                <img src="../{{ item.picture.picture }}" style="width:200px; height: 200px;">
+            </div>
+            <h4 class="red">{{ item.person }}</h4>
+        </div>
+        {% endfor %}
+    </div>
+    <h3>Top Tags</h3>
+
+    <div class="row">
+        {% for item in toptags %}
+        <div class="col-md-3 container text-center">
+            <div class="square ltbl" style="height: 200px;">
+                <img src="../{{ item.picture.picture }}" style="width:200px; height: 200px;">
+            </div>
+            <h4 class="red">{{ item.tag }}</h4>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="jumbotron search-results" style="margin-bottom: 0px;">
+    <h3 class="search-header">Results</h3>
+    <div class="results" style="overflow-y: auto; height: 600px;">
+        {% for picture in pictures %}
+        <div class="col-md-3" style="padding-right: 0px; padding-left: 0px; margin: 0px;">
+            {% load static %}
+            <img class="img" src="../{{ picture.picture }}" style="width: 300px; height: 300px;">
+        </div>
+        {% endfor %}
+    </div>
+    <div id="map">
+
+    </div>
+</div>
+<div class="jumbotron ltbl" style="margin-bottom: 0px; margin-top: 0px;">
+    <form class="container text-center" method="post" name="submitPic" enctype='multipart/form-data'>
+        {% csrf_token %}
+        <h2 class="red col-md-8 col-md-offset-2">Submit a new picture</h2>
+        <div class="form-group row col-md-8 col-md-offset-2">
+            <input class="input" style="margin: auto;" autocomplete="off" type='file' name="fileupload" id="imgInp" accept="image/jpg, image/jpeg, image/png" />
+            <img id="blah" src="# " style="width:300px; height: 300px; margin-bottom: 50px;" alt="Once you select an image, it'll appear here!" />
+        </div>
+
+        <div class="form-group row col-md-8 col-md-offset-2">
+            <label class="red">Tags:</label>
+            <div class="row">
+                <input class="input" type="text" name="tags" placeholder="dog, house, ..etc." style="width: 30ch;">
+            </div>
+        </div>
+        <div class="form-group row col-md-8 col-md-offset-2">
+            <label class="red">People:</label>
+            <div class="row">
+                <input class="input" type="text" name="people" placeholder="Sruti, Baba, Holly ..etc." style="width: 30ch;">
+            </div>
+        </div>
+        <div class="form-group row col-md-8 col-md-offset-2">
+            <label class="red">Address or Location:</label>
+            <div class="row">
+                <input  class="input" type="text" name="location" placeholder="123 E Enter St. or Atlanta, GA" style="width:30ch;">
+            </div>
+        </div>
+        <div class="form-group row col-md-8 col-md-offset-2">
+            <button class="btn btn-default" type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+<div class="footer">
+    <h5>Barnali Banerjee</h5>
+</div>
+<script>
+
+function initMap() {
+        var atlanta = {lat: 33.7756, lng: -84.3963};
+        var bounds = new google.maps.LatLngBounds();
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+                  zoom: 16,
+                  center: atlanta
+        });
+
+        var addresses = [{% for picture in pictures %} '{{picture.location}}', {% endfor %}]
+
+        for (x = 0; x < addresses.length; x++) {
+             var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode( { 'address': addresses[x]}, makeCallback(x, bounds));
+        }
+        function makeCallback(addressIndex, bounds) {
+        var geocodeCallBack = function(results, status) {
+            var i = addressIndex;
+            if (status == google.maps.GeocoderStatus.OK) {
+                    var latitude = results[0].geometry.location.lat();
+                    var longitude = results[0].geometry.location.lng();
+                    var marker = new google.maps.Marker({
+                    position: {lat: latitude, lng: longitude}, map: map});
+                    bounds.extend(marker.position);
+               }
+               map.fitBounds(bounds);
+
+            }
+            return geocodeCallBack;
+        }
+     }
+
+function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#blah').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imgInp").change(function(){
+        readURL(this);
+    });
+
+function searchname() {
+    var sname = $("#search").val();
+    $.ajax({
+        url: '/searchName/' + sname + '/',
+        type: 'POST',
+        data: {'name' : sname},
+        success: function(response) {
+            console.log(response);
+            window.location.href = '/searchName/' + sname + '/';
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+};
+
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaMncQztPiFwEgy1kHCV74pCRkMqZYT-g&callback=initMap">
+</script>
+{% endblock %}
+</html>

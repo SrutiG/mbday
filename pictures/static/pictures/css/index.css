@@ -1,0 +1,59 @@
+body {
+    background-color: #55707F;
+    font-family: 'Quicksand', sans-serif;
+
+}
+.main {
+    position: relative;
+    margin-top: 0px;
+    background-color: #9DBBCC;
+}
+
+.main-img {
+    position: relative;
+    margin-top: 0px;
+    background-color: inherit;
+}
+
+.marathon {
+    width: 50%;
+    height: auto;
+}
+
+.main-header {
+    color: #D43E42;
+}
+
+.categories {
+    background-color: #55707F;
+}
+
+.ltbl {
+    background-color: #9DBBCC;
+}
+
+.red {
+    color: #D43E42;
+}
+
+.footer {
+    background-image: url("../images/tulip.JPG");
+    background-size: 200px auto;
+    background-position: center;
+    height: 200px;
+}
+
+.search-results {
+    background-color: #55707F;
+    margin-top: 0px;
+    ..display: none;
+}
+
+.search-header {
+    margin-left: 50px;
+}
+
+#map {
+    height: 300px;
+
+}

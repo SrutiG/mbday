@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang = "en">
+<head>
+
+    <meta charset='utf-8'>
+    <title>Happy Birthday Mama!</title>
+    <meta name = 'description' content = "Mama's Website">
+    <meta name = 'author' content = "Sruti Guhathakurta">
+
+    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'pictures/css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'pictures/css/index.css' %}"/>
+
+    {% block extrastyle %} {% endblock %}
+
+    <script type="text/javascript" src="{% static 'pictures/js/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pictures/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'pictures/js/index.js' %}"></script>
+
+    {% block extrascript %}{% endblock %}
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body {% block class %} {%endblock %}>
+{% block content %}
+{% endblock %}
+</body>
+
+</html>
